@@ -30,7 +30,7 @@ export default async function HomePage() {
                 Timeless Elegance, Modern Design
               </h1>
               <p className="text-lg text-text-muted leading-relaxed mb-8">
-                Discover our curated collection of clothing crafted for the modern woman.
+                Discover our collection of clothing crafted for the modern woman.
                 Every piece tells a story of quality and sophistication.
               </p>
               <Link

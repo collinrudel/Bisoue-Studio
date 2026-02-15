@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="font-serif text-xl mb-4">Bisoue Studio</h3>
             <p className="text-sm text-background/70 leading-relaxed">
-              Curated clothing for the modern woman. Timeless pieces crafted with care and attention to detail.
+              Timeless pieces crafted with care and attention to detail.
             </p>
           </div>
           <div>

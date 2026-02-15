@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Shop All | Bisoue Studio",
-  description: "Browse our full collection of curated clothing.",
+  description: "Browse our full collection of clothing.",
 };
 
 export default async function ProductsPage({
