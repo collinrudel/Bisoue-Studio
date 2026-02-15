@@ -27,6 +27,7 @@ export default function Navbar() {
             <Link href="/products?category=bottoms" className="text-sm font-medium hover:text-accent-dark transition-colors">Bottoms</Link>
             <Link href="/products?category=dresses" className="text-sm font-medium hover:text-accent-dark transition-colors">Dresses</Link>
             <Link href="/products?category=outerwear" className="text-sm font-medium hover:text-accent-dark transition-colors">Outerwear</Link>
+            <Link href="/products?category=accessories" className="text-sm font-medium hover:text-accent-dark transition-colors">Accessories</Link>
           </div>
 
           <div className="flex items-center gap-4">
