@@ -19,7 +19,7 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image src="/logo.svg" alt="Bisoue Studio" width={140} height={36} priority />
+            <Image src="/logo.jpeg" alt="Bisoue Studio" width={120} height={36} className="rounded-sm" priority />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
