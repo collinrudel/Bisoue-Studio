@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useState, useEffect } from "react";
@@ -17,8 +18,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="font-serif text-2xl font-semibold tracking-wide">
-            Bisoue Studio
+          <Link href="/" className="flex items-center">
+            <Image src="/logo.svg" alt="Bisoue Studio" width={140} height={36} priority />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
