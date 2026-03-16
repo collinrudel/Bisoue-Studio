@@ -63,7 +63,7 @@ export default function ProductDetailPage() {
       productId: product!.id,
       slug: product!.slug,
       name: product!.name,
-      price: product!.price,
+      price: product!.compareAtPrice ?? product!.price,
       size: selectedSize,
       quantity: 1,
       image: primaryImage.url,

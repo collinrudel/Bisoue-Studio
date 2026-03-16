@@ -98,9 +98,13 @@ export default function CartPage() {
       </div>
 
       <div className="border-t border-border pt-6">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-text-muted">Subtotal</span>
+          <span className="text-sm">{formatPrice(total)}</span>
+        </div>
         <div className="flex items-center justify-between mb-6">
-          <span className="text-lg font-medium">Total</span>
-          <span className="text-xl font-serif font-semibold">{formatPrice(total)}</span>
+          <span className="text-sm text-text-muted">Tax</span>
+          <span className="text-sm text-text-muted">Calculated at checkout</span>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
