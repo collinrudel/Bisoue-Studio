@@ -17,11 +17,13 @@ interface ImageUploaderProps {
 
 export default function ImageUploader({ images, onChange }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleUpload(files: FileList | null) {
     if (!files || files.length === 0) return;
     setUploading(true);
+    setError(null);
 
     const newImages = [...images];
     for (const file of Array.from(files)) {
@@ -41,9 +43,13 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
             isPrimary: newImages.length === 0,
             sortOrder: newImages.length,
           });
+        } else {
+          const data = await res.json().catch(() => ({}));
+          setError(data.error || `Upload failed (${res.status})`);
         }
       } catch (err) {
         console.error("Upload failed:", err);
+        setError("Upload failed. Please try again.");
       }
     }
 
@@ -98,6 +104,10 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
           </div>
         ))}
       </div>
+
+      {error && (
+        <p className="text-sm text-red-500 mb-2">{error}</p>
+      )}
 
       <div
         onClick={() => fileInputRef.current?.click()}
