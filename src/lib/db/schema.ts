@@ -90,6 +90,13 @@ export const orderItems = sqliteTable("order_items", {
   unitPrice: real("unit_price").notNull(),
 });
 
+export const shippingRates = sqliteTable("shipping_rates", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  stripeRateId: text("stripe_rate_id").notNull(),
+  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+});
+
 // Relations
 export const categoriesRelations = relations(categories, ({ many }) => ({
   products: many(products),
