@@ -5,14 +5,22 @@ import Image from "next/image";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useState, useEffect } from "react";
+import type { Category } from "@/types";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const cartCount = useCartStore((s) => s.getItemCount());
   const wishlistCount = useWishlistStore((s) => s.getItemCount());
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then((data) => Array.isArray(data) && setCategories(data))
+      .catch(() => {});
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
@@ -32,11 +40,9 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-8">
             <Link href="/products" className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">Shop All</Link>
-            <Link href="/products?category=tops" className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">Tops</Link>
-            <Link href="/products?category=bottoms" className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">Bottoms</Link>
-            <Link href="/products?category=dresses" className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">Dresses</Link>
-            <Link href="/products?category=outerwear" className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">Outerwear</Link>
-            <Link href="/products?category=accessories" className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">Accessories</Link>
+            {categories.map((cat) => (
+              <Link key={cat.id} href={`/products?category=${cat.slug}`} className="text-base font-medium text-foreground/80 hover:text-accent transition-colors">{cat.name}</Link>
+            ))}
           </div>
 
           <div className="flex items-center gap-4">
@@ -71,11 +77,9 @@ export default function Navbar() {
         {mobileOpen && (
           <div className="md:hidden pb-4 border-t border-border pt-4 space-y-3">
             <Link href="/products" className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>Shop All</Link>
-            <Link href="/products?category=tops" className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>Tops</Link>
-            <Link href="/products?category=bottoms" className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>Bottoms</Link>
-            <Link href="/products?category=dresses" className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>Dresses</Link>
-            <Link href="/products?category=outerwear" className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>Outerwear</Link>
-            <Link href="/products?category=accessories" className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>Accessories</Link>
+            {categories.map((cat) => (
+              <Link key={cat.id} href={`/products?category=${cat.slug}`} className="block text-base font-medium text-foreground/80 hover:text-accent" onClick={() => setMobileOpen(false)}>{cat.name}</Link>
+            ))}
           </div>
         )}
       </nav>

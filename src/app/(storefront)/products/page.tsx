@@ -72,7 +72,7 @@ export default async function ProductsPage({
         </p>
       </div>
 
-      <ProductFilters categories={categories} />
+      <ProductFilters />
       <ProductGrid products={allProducts} />
     </div>
   );
