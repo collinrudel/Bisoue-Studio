@@ -19,7 +19,7 @@ interface ImageData {
 
 interface VariantData {
   size: string;
-  stock: number;
+  stock: number | "";
   sku: string;
 }
 
@@ -52,9 +52,9 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   const [variants, setVariants] = useState<VariantData[]>(
     product?.variants?.map((v) => ({
       size: v.size,
-      stock: v.stock,
+      stock: v.stock as number | "",
       sku: v.sku || "",
-    })) || DEFAULT_SIZES.map((s) => ({ size: s, stock: 0, sku: "" }))
+    })) || DEFAULT_SIZES.map((s) => ({ size: s, stock: "" as const, sku: "" }))
   );
 
   function updateVariant(index: number, field: keyof VariantData, value: string | number) {
@@ -64,7 +64,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   }
 
   function addVariant() {
-    setVariants((prev) => [...prev, { size: "", stock: 0, sku: "" }]);
+    setVariants((prev) => [...prev, { size: "", stock: "", sku: "" }]);
   }
 
   function removeVariant(index: number) {
@@ -85,7 +85,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       isActive,
       isFeatured,
       images,
-      variants: variants.filter((v) => v.size),
+      variants: variants.filter((v) => v.size).map((v) => ({ ...v, stock: v.stock === "" ? 0 : v.stock })),
     };
 
     try {
@@ -148,7 +148,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Price ($)</label>
+          <label className="block text-sm font-medium mb-1">Full Price</label>
           <input
             type="number"
             step="0.01"
@@ -159,14 +159,14 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Compare at Price ($)</label>
+          <label className="block text-sm font-medium mb-1">Offer Price</label>
           <input
             type="number"
             step="0.01"
             value={compareAtPrice}
             onChange={(e) => setCompareAtPrice(e.target.value)}
             className="w-full px-4 py-2.5 rounded-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-accent"
-            placeholder="Optional sale price"
+            placeholder="Optional"
           />
         </div>
       </div>
@@ -225,7 +225,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
               <input
                 type="number"
                 value={variant.stock}
-                onChange={(e) => updateVariant(i, "stock", parseInt(e.target.value) || 0)}
+                onChange={(e) => updateVariant(i, "stock", e.target.value === "" ? "" : parseInt(e.target.value) || 0)}
                 placeholder="Stock"
                 className="w-24 px-3 py-2 rounded-sm border border-border bg-background text-sm focus:outline-none focus:ring-1 focus:ring-accent"
               />
