@@ -48,7 +48,8 @@ export async function POST(request: Request) {
         );
       }
 
-      const primaryImage = product.images.find((i) => i.isPrimary);
+      const primaryImage = product.images.find((i) => i.isPrimary) || product.images[0];
+      const effectivePrice = product.compareAtPrice ?? product.price;
 
       lineItems.push({
         price_data: {
@@ -56,13 +57,11 @@ export async function POST(request: Request) {
           product_data: {
             name: product.name,
             description: `Size: ${item.size}`,
-            ...(primaryImage && {
-              images: [
-                `${process.env.BASE_URL || "http://localhost:3000"}${primaryImage.url}`,
-              ],
+            ...(primaryImage?.url.startsWith("http") && {
+              images: [primaryImage.url],
             }),
           },
-          unit_amount: Math.round(product.price * 100),
+          unit_amount: Math.round(effectivePrice * 100),
         },
         quantity: item.quantity,
       });
