@@ -70,6 +70,11 @@ export async function POST(request: Request) {
     const session = await getStripe().checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
+      shipping_address_collection: { allowed_countries: ["US"] },
+      shipping_options: [
+        { shipping_rate: "shr_1TBRE3Rv6gmYDGQmqLZl2SyX" },
+        { shipping_rate: "shr_1TBRDWRv6gmYDGQmAisPeXjm" },
+      ],
       success_url: `${process.env.BASE_URL || "http://localhost:3000"}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.BASE_URL || "http://localhost:3000"}/cart`,
       metadata: {

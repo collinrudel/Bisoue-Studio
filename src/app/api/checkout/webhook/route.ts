@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
 import { orders, orderItems, productVariants, products } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
   try {
@@ -72,23 +72,19 @@ export async function POST(request: Request) {
             productName: product.name,
             size: item.size,
             quantity: item.quantity,
-            unitPrice: product.price,
+            unitPrice: product.compareAtPrice ?? product.price,
           });
 
-          // Decrement stock
-          const variant = await db.query.productVariants.findFirst({
-            where: and(
-              eq(productVariants.productId, item.productId),
-              eq(productVariants.size, item.size)
-            ),
-          });
-
-          if (variant) {
-            await db
-              .update(productVariants)
-              .set({ stock: Math.max(0, variant.stock - item.quantity) })
-              .where(eq(productVariants.id, variant.id));
-          }
+          // Atomic stock decrement — no separate read needed
+          await db
+            .update(productVariants)
+            .set({ stock: sql`MAX(0, stock - ${item.quantity})` })
+            .where(
+              and(
+                eq(productVariants.productId, item.productId),
+                eq(productVariants.size, item.size)
+              )
+            );
         }
       }
     }

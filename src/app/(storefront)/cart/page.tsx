@@ -8,9 +8,35 @@ import { useState, useEffect } from "react";
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { items, removeItem, updateQuantity, getTotal } = useCartStore();
 
   useEffect(() => setMounted(true), []);
+
+  async function handleCheckout() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            productId: i.productId,
+            size: i.size,
+            quantity: i.quantity,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Checkout failed");
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+      setLoading(false);
+    }
+  }
 
   if (!mounted) {
     return (
@@ -41,6 +67,12 @@ export default function CartPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <h1 className="text-3xl font-serif mb-8">Your Cart</h1>
+
+      {error && (
+        <div className="bg-red-50 text-red-700 px-4 py-3 rounded-sm text-sm mb-6">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-4 mb-8">
         {items.map((item) => (
@@ -103,16 +135,17 @@ export default function CartPage() {
           <span className="text-sm">{formatPrice(total)}</span>
         </div>
         <div className="flex items-center justify-between mb-6">
-          <span className="text-sm text-text-muted">Tax</span>
+          <span className="text-sm text-text-muted">Shipping</span>
           <span className="text-sm text-text-muted">Calculated at checkout</span>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            href="/checkout"
-            className="flex-1 bg-foreground text-background text-center py-3.5 text-sm font-medium tracking-wide hover:bg-foreground/90 transition-colors"
+          <button
+            onClick={handleCheckout}
+            disabled={loading}
+            className="flex-1 bg-foreground text-background text-center py-3.5 text-sm font-medium tracking-wide hover:bg-foreground/90 transition-colors disabled:opacity-50"
           >
-            Proceed to Checkout
-          </Link>
+            {loading ? "Redirecting..." : "Proceed to Checkout"}
+          </button>
           <Link
             href="/products"
             className="flex-1 border border-border text-center py-3.5 text-sm font-medium hover:bg-muted transition-colors"
