@@ -45,10 +45,12 @@ export default function ProductCard({ product }: { product: Product }) {
             <p className="text-xs text-text-muted mt-0.5">{product.category.name}</p>
           )}
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-sm font-medium">{formatPrice(product.price)}</span>
+            <span className="text-sm font-medium">
+              {formatPrice(product.compareAtPrice ?? product.price)}
+            </span>
             {product.compareAtPrice && (
               <span className="text-xs text-text-muted line-through">
-                {formatPrice(product.compareAtPrice)}
+                {formatPrice(product.price)}
               </span>
             )}
           </div>

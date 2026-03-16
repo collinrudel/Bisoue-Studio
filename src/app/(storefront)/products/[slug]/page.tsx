@@ -21,13 +21,12 @@ export default function ProductDetailPage() {
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
 
   useEffect(() => {
-    fetch(`/api/products?search=${slug}`)
+    fetch(`/api/products?slug=${slug}`)
       .then((r) => r.json())
-      .then((data: Product[]) => {
-        const found = data.find((p) => p.slug === slug);
-        if (found) {
-          setProduct(found);
-          const availableVariant = found.variants?.find((v) => v.stock > 0);
+      .then((data: Product | null) => {
+        if (data) {
+          setProduct(data);
+          const availableVariant = data.variants?.find((v) => v.stock > 0);
           if (availableVariant) setSelectedSize(availableVariant.size);
         }
         setLoading(false);
@@ -143,10 +142,12 @@ export default function ProductDetailPage() {
           <h1 className="text-3xl sm:text-4xl font-serif mb-4">{product.name}</h1>
 
           <div className="flex items-center gap-3 mb-6">
-            <span className="text-2xl font-medium">{formatPrice(product.price)}</span>
+            <span className="text-2xl font-medium">
+              {formatPrice(product.compareAtPrice ?? product.price)}
+            </span>
             {product.compareAtPrice && (
               <span className="text-lg text-text-muted line-through">
-                {formatPrice(product.compareAtPrice)}
+                {formatPrice(product.price)}
               </span>
             )}
             {product.compareAtPrice && (

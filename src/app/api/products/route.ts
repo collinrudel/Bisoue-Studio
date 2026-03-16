@@ -11,6 +11,15 @@ export async function GET(request: Request) {
     const sort = searchParams.get("sort");
     const search = searchParams.get("search");
     const featured = searchParams.get("featured");
+    const slug = searchParams.get("slug");
+
+    if (slug) {
+      const product = await db.query.products.findFirst({
+        where: eq(products.slug, slug),
+        with: { category: true, images: true, variants: true },
+      });
+      return NextResponse.json(product || null);
+    }
 
     let allProducts = await db.query.products.findMany({
       with: {
